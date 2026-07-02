@@ -1,5 +1,5 @@
 # International Hotels Analysis
-This SQLite code queries from a database of 25 international hotels, their customer reviews, and reviewer demographics.
+This project pertains to a database of 25 international hotels, their customer reviews, and reviewer demographics.
 
 While examining the database in excel, I looked for consistent naming conventions in the variable titles, and if any of the values varied 
 from each other within columns. I could not find any inconsistencies or nulls. 
