@@ -8,4 +8,6 @@ The reviews are dated from 2020 to 2025.
 
 The Hotel Reviewer Demographics Dashboard aims to give insights into the users who are leaving hotel reviews. The dashboard reveals that families tend to leave the highest reviews and that most reviewers tend to be from the United States or Western Europe. The age group that leaves higher reviews varies by hotel. There are also filters for those who are interested in specific hotels or time frames. These insights could inform what groups of travelers to target if hotels were hoping to increase their reviews scores or the number of reviews. 
 
+The analysis I performed in SQLite first created a report of all 25 hotels and their average overall review score. Then I focused on finding the best and worst hotels in the database for each year of data. The Golden Oasis in Dubai was the highest rated from 2020 to 2023 whle Canal House Grand in Amsterdam took the highest score from 2024 to 2025. The Savannah House in Lagos was consistently the lowest rated. Then I focused on what the different review scores revealed about each hotel and the user demographics of their reviewers. Please take a look at the SQLite Analysis file for more details. 
+
 Data obtained from Kaggle: https://www.kaggle.com/datasets/alperenmyung/international-hotel-booking-analytics?resource=download
