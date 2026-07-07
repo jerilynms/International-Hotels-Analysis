@@ -2,7 +2,7 @@
 This project pertains to a database of 25 international hotels, their customer reviews, and reviewer demographics.
 
 While examining the database in excel, I looked for consistent naming conventions in the variable titles, and if any of the values varied 
-from each other within columns. I could not find any inconsistencies or nulls. 
+from each other within columns. I could not find any inconsistencies. I used SQLite's column reordering function to pinpoint any nulls and could not find any either. 
 Of the 25 hotels, all are 5 star accommodations and located in a distinct city and country.
 The reviews are dated from 2020 to 2025. 
 
