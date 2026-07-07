@@ -1,0 +1,93 @@
+# To begin my analysis, I was interested in the best and worst rated hotels and what kind of scores they recieved. 
+# The Golden Oasis in Dubai (2020-2023) and Canal House Grand in Amsterdam (2024-2025) are the best rated hotels. 
+# The Savannah House in Lagos is consistently the lowest rated. 
+
+# The Golden Oasis scored on average higher than Canal House Grand on comfort, facilities, and staff while 
+# Canal House Grand beat them on cleanliness, location, and value for money. 
+
+# Next, I questioned what kind of user leaves higher reviews for these three hotels so that hotels could target
+# certain demographics if they wished to increase their scores. 
+# It seems that more men leave reviews but women tend to give a slightly higher score
+# For all three hotels, the age groups that leave the most reviews are 25-34 and 35-44. For The Golden Oasis and
+# Canal House Grand, the higher reviews are left by the younger age groups (under 44). 
+# For The Savannah House, the higher reviews are left by the older age groups (over 35).
+# For the type of traveller, couples leave the most reviews, but families consistently rate the hotels higher.
+# The demographic group that leaves the highest average overall score:
+# The Golden Oasis-Familys 55+, Canal House Grand-Families 45-54, and The Savannah House-Families 18-24.  
+
+
+-- How many reviews does each hotel in this list have, what is their average overall score?
+SELECT h.hotel_name, h.city, count(r.review_id) number_of_reviews, round(avg(score_overall),2) overall_score
+FROM reviews r
+JOIN hotels h
+ON r.hotel_id = h.hotel_id
+GROUP BY r.hotel_id
+ORDER BY avg(score_overall) DESC;
+
+-- What were the best and worst hotels for each year between 2020 and 2025?
+WITH Rankings AS (
+SELECT substr(review_date,1,4) as year, hotel_id, avg(score_overall) as score, 
+RANK() OVER (
+PARTITION BY substr(review_date,1,4) 
+ORDER BY avg(score_overall) DESC
+) AS Rankings
+FROM reviews
+GROUP BY hotel_id, substr(review_date,1,4)
+)
+SELECT r.year, r.hotel_id, h.hotel_name, h.city, ROUND(score, 2) as Average_Score, r.Rankings
+FROM Rankings r
+JOIN hotels h
+ON r.hotel_id = h.hotel_id
+WHERE r.Rankings = (SELECT MIN(Rankings) FROM Rankings)
+OR r.Rankings = (SELECT MAX(Rankings) FROM Rankings);
+
+-- What are the average review scores in all areas for the three hotels of interest?
+-- The Golden Oasis ID = 5, Canal House Grand ID = 22, The Savannah House ID = 24
+SELECT hotel_name, round(avg(score_overall),2) Overall, round(avg(score_cleanliness),2) Cleanliness,
+round(avg(score_comfort),2) Comfort, round(avg(score_facilities),2) Facilities,
+round(avg(score_location),2) Location, round(avg(score_staff),2) Staff, round(avg(score_value_for_money),2) Value_for_money
+FROM reviews r
+LEFT JOIN hotels h
+ON r.hotel_id = h.hotel_id
+WHERE r.hotel_id IN(5,22,24)
+GROUP BY r.hotel_id;
+
+-- For these three hotels, do men or women review them more and what is the average score for each group?
+SELECT hotel_id, user_gender, COUNT(*) AS Number_of_Reviews, ROUND(AVG(score_overall),3) AS Average_Score
+FROM users u
+RIGHT JOIN reviews r
+ON u.user_id = r.user_id
+WHERE hotel_id IN(5, 22, 24)
+group by hotel_id, user_gender;
+
+-- For these three hotels, what age group reviews more and what is the average score for each group?
+SELECT hotel_id, age_group, COUNT(*) AS Number_of_Reviews, ROUND(AVG(score_overall),3) AS Average_Score
+FROM users u
+RIGHT JOIN reviews r
+ON u.user_id = r.user_id
+WHERE hotel_id IN(5, 22, 24)
+group by hotel_id, age_group;
+
+-- For these three hotels, what traveller type reviews more and what is the average score for each group?
+SELECT hotel_id, traveller_type, COUNT(*) AS Number_of_Reviews, ROUND(AVG(score_overall),3) AS Average_Score
+FROM users u
+RIGHT JOIN reviews r
+ON u.user_id = r.user_id
+WHERE hotel_id IN(5, 22, 24)
+group by hotel_id, traveller_type;
+
+-- Which complete demographic leaves the highest overall score
+WITH Rankings AS (
+SELECT hotel_id, user_gender, age_group, traveller_type, ROUND(AVG(score_overall),3) AS Average_Score,
+RANK() OVER (
+PARTITION BY hotel_id
+ORDER BY AVG(score_overall) desc
+) AS Ranks
+FROM users u
+RIGHT JOIN reviews r
+ON u.user_id = r.user_id
+WHERE hotel_id IN(5, 22, 24)
+group by hotel_id, user_gender, age_group, traveller_type
+)
+SELECT * FROM Rankings
+WHERE Ranks = 1;
