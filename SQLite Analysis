@@ -15,6 +15,10 @@
 # The demographic group that leaves the highest average overall score:
 # The Golden Oasis-Families 55+, Canal House Grand-Families 45-54, and The Savannah House-Families 18-24.  
 
+# Lastly, I was interested in the number of repeat reviewers these three hotels had and if there was a difference in
+# the rate of returning reviwers. The Golden Oasis has the highest rate of repeating customers (41.76%), followed by 
+# The Savannah House (40.84%) and Canal House Grand (40.51%). 
+
 
 -- How many reviews does each hotel in this list have, what is their average overall score?
 SELECT h.hotel_name, h.city, count(r.review_id) number_of_reviews, round(avg(score_overall),2) overall_score
@@ -91,3 +95,27 @@ group by hotel_id, user_gender, age_group, traveller_type
 )
 SELECT * FROM Rankings
 WHERE Ranks = 1;
+
+-- For these three hotels, how many repeat reviewers do they have and what is the rate of returning reviewers 
+WITH review_count AS (
+SELECT hotel_id, user_id, COUNT(review_id) AS number_of_reviews
+FROM reviews
+WHERE hotel_id IN(5,22,24)
+GROUP BY hotel_id, user_id
+ORDER BY hotel_id desc
+),
+repeaters AS (
+SELECT hotel_id, COUNT(user_id) AS repeat_reviewers
+FROM review_count 
+WHERE number_of_reviews > 1 
+GROUP BY hotel_id
+)
+
+SELECT hotel_name, COUNT(rc.user_id) AS total_reviewers, r.repeat_reviewers,
+ROUND(((r.repeat_reviewers*1.0)/COUNT(rc.user_id))*100,2) AS return_rate
+FROM review_count rc
+JOIN hotels h
+ON rc.hotel_id = h.hotel_id
+JOIN repeaters r
+ON rc.hotel_id = r.hotel_id
+GROUP BY hotel_name;
