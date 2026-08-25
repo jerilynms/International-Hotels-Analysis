@@ -1,4 +1,7 @@
 # International Hotels Analysis
+
+Interactive Dashboard Link: https://jerilynms.github.io/International-Hotels-Analysis/
+
 This project pertains to a database of 25 international hotels, their customer reviews, and reviewer demographics.
 
 While examining the database in excel, I looked for consistent naming conventions in the variable titles, and if any of the values varied 
